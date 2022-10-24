@@ -1,24 +1,24 @@
+import java.util.Arrays;
+
 public class DynArray
 {
-    // Mandatory Instance Variables
+    // Mandatory Instance variables
     private double[] array;
     private int size;
     private int nextIndex;
 
-    // Mandatory Instance Methods
-
-    // constructor
+    // Constructor
     public DynArray()
     // set array to a new array of double, of size one
     // set size to one,
     // and set nextIndex to zero.
     {
-        array = new double[size];
+        array = new double[1];
         size = 1;
         nextIndex = 0;
     }
 
-    // accessor
+    // Accessor
     public int arraySize()
     // return the value of size.
     {
@@ -39,14 +39,10 @@ public class DynArray
     // else
     // return Double.NaN.
     {
-        if (0 <= index < nextIndex)
-        {
+        if(0 <= index && index < nextIndex)
             return array[index];
-        }
         else
-        {
             return Double.NaN;
-        }
     }
 
     private void grow()
@@ -54,6 +50,11 @@ public class DynArray
     // and contains the same values for indices 0 through
     // nextIndex - 1, and adjust size appropriately.
     {
+        if(nextIndex == size)
+        {
+            array = Arrays.copyOf(array, size * 2);
+            size = size *2;
+        }
     }
 
     private void shrink()
@@ -61,6 +62,13 @@ public class DynArray
     // and contains the same values for indices 0 through
     // nextIndex - 1, and adjust size appropriately.
     {
+        int halfSize = size / 2;
+        if(nextIndex != 0)
+            if(nextIndex <= (halfSize))
+            {
+                array = Arrays.copyOf(array, halfSize);
+                size = halfSize;
+            }
     }
 
     // mutator
@@ -68,23 +76,28 @@ public class DynArray
     // if 0 <= index <= nextIndex
     // move the necessary values over one so that value can
     // be inserted at the location index in the array, inserts
-    // value at the location index, and adjust nextIndex
+    //  value at the location index, and adjust nextIndex
     // appropriately.
     // Note a grow() may be necessary before or after.
     // else
     // do nothing.
     {
-        if (0 <= index <= nextIndex)
+        if(0 <= index && index <= nextIndex)
         {
-
+            grow();
+            if (nextIndex - index >= 0) System.arraycopy(array, index, array, index + 1, nextIndex - index);
         }
+        array[index] = value;
+        nextIndex++;
     }
 
     // mutator
     public void insert(double value)
     // insert value at location nextIndex.
     {
-        insertAt(nextIndex, value);
+        grow();
+        array[nextIndex] = value;
+        nextIndex++;
     }
 
     // mutator
@@ -98,28 +111,36 @@ public class DynArray
     // else
     // return Double.NaN.
     {
-        if (0 <= index < nextIndex)
+        if(index >=0 && index < nextIndex)
         {
+            double value = at(index);
+            shrink();
+            if (nextIndex - 1 - index >= 0) System.arraycopy(array, index + 1, array, index, nextIndex - 1 - index);
+            nextIndex--;
+            return value;
         }
         else
-        {
-            shrink();
-        }
-        return Double.NaN;
+            return Double.NaN;
     }
 
     // mutator
     public double remove()
     // return the removal of the value at location nextIndex-1.
     {
-        return removeAt(nextIndex - 1);
+        shrink();
+        double value = at(nextIndex - 1);
+        --nextIndex;
+        if(nextIndex == -1)
+            nextIndex = 0;
+        return value;
     }
 
-    //accessor
+    // accessor
     public void printArray()
     // prints the values of all occupied locations of the array to
     // the screen
     {
-        System.out.println();
+        for(int i = 0; i < nextIndex; i++)
+            System.out.printf("\narray.at(%d) = %.2f", i, array[i]);
     }
 }

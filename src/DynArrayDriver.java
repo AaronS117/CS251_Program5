@@ -1,3 +1,10 @@
+/*******************************************
+ Aaron Oropeza
+ COMPSCI 251-401
+ Program 5
+ 10/24/2022
+ Note: It is my Birthday today!
+ ******************************************/
 public class DynArrayDriver
 {
     public static void main(String[] args)
